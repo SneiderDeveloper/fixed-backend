@@ -47,10 +47,10 @@ class UserService {
     }
   }
 
-  async read(id) {
+  async read(user_id) {
     let user = null
     try {
-      const userRef = this.db.collection('users').doc(id)
+      const userRef = this.db.collection('users').doc(user_id)
       user = await userRef.get()
     } catch (err) {
       throw boom.internal(err)
