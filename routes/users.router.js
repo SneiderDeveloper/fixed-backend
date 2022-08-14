@@ -98,7 +98,7 @@ router.get('/geo',
 )
 
 router.get('/:user_id',
-  validatorHandler(getUserSchema, 'params'),
+  // validatorHandler(getUserSchema, 'params'),
   async (req, res, next) => {
       try {
           const { user_id } = req.params
