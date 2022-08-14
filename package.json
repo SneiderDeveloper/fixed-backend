@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "description": "Backend of Fixed",
   "engines": {
+<<<<<<< HEAD
     "node": "16.x",
     "npm": "8.x"
+=======
+    "node": "16.x"
+>>>>>>> 8422ce2bdd6cba2a93a17d4847dfc19dac922aab
   },
   "main": "index.js",
   "scripts": {
