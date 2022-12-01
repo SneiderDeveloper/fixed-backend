@@ -1,14 +1,19 @@
 const express = require('express')
 const routerApi = require('./routes/')
 const cors = require('cors')
-const { errorHandleBoom, errorHandle } = require('./middleware/error.handler')
+const { 
+    errorHandleBoom, 
+    errorHandle,
+    ormErrorHandler
+} = require('./middleware/error.handler')
 
 const app = express()
 const PORT = process.env.PORT || 3001
 
 const whitelist = [
     'http://localhost:3000',
-    'https://fixed.com.co/'
+    'https://fixed.com.co/',
+    'http://192.168.101.9:3000'
 ]
 
 const options = {
@@ -26,6 +31,7 @@ app.get('/', (req, res) => {
 })
 
 routerApi(app)
+app.use(ormErrorHandler)
 app.use(errorHandleBoom)
 app.use(errorHandle)
 

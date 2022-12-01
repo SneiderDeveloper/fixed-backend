@@ -15,4 +15,28 @@ router.get('/',
     }
 )
 
+router.get('/:states_id', 
+    async (req, res, next) => {
+        try {
+            const { states_id } = req.params
+            const data = await states.findOne(states_id)
+            res.json(data)
+        } catch (err) {
+            next(err)
+        }
+    }
+)
+
+router.post('/',
+    async (req, res, next) => {
+        try {
+            const data = req.body
+            const response = await states.create(data)
+            res.json(response)
+        } catch (err) {
+            next(err)
+        }
+    }
+)
+
 module.exports = router

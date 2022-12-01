@@ -1,21 +1,58 @@
+const { models } = require('../libs/sequelize')
 const boom = require('@hapi/boom')
-const fetch = require('node-fetch')
 
 class StateService {
     constructor() {
-        this.states = []
+    }
+
+    async findOne(id) {
+        try {
+            const states = await models.State.findByPk(id, { include: ['city'] })
+            if (!states) throw boom.notFound('State not found')
+            return states
+        } catch (err) {
+            throw boom.badRequest(err)
+        }
     }
 
     async read() {
         try {
-            if (this.states.length <= 0) {
-                const response = await fetch('https://raw.githubusercontent.com/marcovega/colombia-json/master/colombia.min.json')
-                const data = await response.json()
-                this.states = data
-                return this.states
-            } else return this.states
+            const states = await models.State.findAll()
+            return states
         } catch (err) {
-            throw boom.failedDependency(err)
+            throw boom.badRequest(err)
+        }
+    }
+
+    async readCityByState(id) {
+        try {
+            const query = `
+                SELECT city_name as "cityName", cities.id, we_are_here as "weAreHere" 
+                FROM states
+                    INNER JOIN cities ON cities.states_id = states.id
+                    WHERE states.id = ${id};
+            `
+            const [response] = await models.State.sequelize.query(query)
+            return response
+        } catch (err) {
+            throw boom.badRequest(err)
+        }
+    }
+
+    async create(data) {
+        try {
+            const client = await getConnection()
+            const result = data.map(async (item) => {
+                const response = await client.query(`
+                    INSERT INTO cities(
+                        name, we_are_here, states_id)
+                        VALUES ('${item}', FALSE, 34)
+                `)
+                return response.rows
+            })
+            return result
+        } catch (err) {
+            throw boom.badRequest(err)
         }
     }
 }

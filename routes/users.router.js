@@ -46,6 +46,57 @@ const cpUpload = upload.fields([
   },
 ])
 
+router.get('/',
+  // validatorHandler(getUserSchema, 'params'),
+  async (req, res, next) => {
+      try {
+          // const { user_id } = req.params
+          const userData = await user.read()
+          res.json(userData)
+      } catch (err) {
+          next(err)
+      }
+  }
+)
+
+router.get('/:phone_number',
+  // validatorHandler(getUserSchema, 'params'),
+  async (req, res, next) => {
+      try {
+          const { phone_number } = req.params
+          const userData = await user.findOneForPhoneNumber(phone_number)
+          res.json(userData)
+      } catch (err) {
+          next(err)
+      }
+  }
+)
+
+router.get('/findTechnician/:user_id',
+  async (req, res, next) => {
+      try {
+          const { user_id } = req.params
+          const technical = await user.findTechnician(user_id)
+          res.json(technical)
+      } catch (err) {
+          next(err)
+      }
+  }
+)
+
+router.get('/byUserId/:user_id',
+  // validatorHandler(getUserSchema, 'params'),
+  async (req, res, next) => {
+      try {
+          const { user_id } = req.params
+          const userData = await user.findOne(user_id)
+          res.json(userData)
+      } catch (err) {
+          next(err)
+      }
+  }
+)
+
 router.post('/',
   validatorHandler(createUserSchema, 'body'),
   async (req, res, next) => {
@@ -53,6 +104,33 @@ router.post('/',
           const { body } = req
           const newUser = await user.create(body)
           res.json(newUser)
+      } catch (err) {
+          next(err)
+      }
+  }
+)
+
+router.patch('/:user_id',
+  // validatorHandler(getUserSchema, 'params'),
+  validatorHandler(updateUserSchema, 'body'),
+  async (req, res, next) => {
+      try {
+          const { params: { user_id }, body } = req
+          const userUpdate = await user.update(user_id, body)
+          res.json(userUpdate)
+      } catch (err) {
+          next(err)
+      }
+  }
+)
+
+router.delete('/:user_id',
+  // validatorHandler(getUserSchema, 'params'),
+  async (req, res, next) => {
+      try {
+          const { user_id } = req.params
+          const deleteUser = await user.delete(user_id)
+          res.json(deleteUser)
       } catch (err) {
           next(err)
       }
@@ -97,44 +175,4 @@ router.get('/geo',
   }
 )
 
-router.get('/:user_id',
-  // validatorHandler(getUserSchema, 'params'),
-  async (req, res, next) => {
-      try {
-          const { user_id } = req.params
-          const userData = await user.read(user_id)
-          res.json(userData)
-      } catch (err) {
-          next(err)
-      }
-  }
-)
-
-router.patch('/:user_id',
-  validatorHandler(getUserSchema, 'params'),
-  validatorHandler(updateUserSchema, 'body'),
-  async (req, res, next) => {
-      try {
-          const { params: { user_id }, body } = req
-          const userUpdate = await user.update(user_id, body)
-          res.json(userUpdate)
-      } catch (err) {
-          next(err)
-      }
-  }
-)
-
-router.delete('/:user_id',
-  validatorHandler(getUserSchema, 'params'),
-  async (req, res, next) => {
-      try {
-          const { user_id } = req.params
-          const deleteUser = await user.delete(user_id)
-          res.json(deleteUser)
-      } catch (err) {
-          next(err)
-      }
-  }
-)
-
-module.exports =  router
+module.exports = router
