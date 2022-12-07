@@ -7,7 +7,7 @@ const {
 } = require('../schemas/schedule.schema')
 
 const router = express.Router()
-const schedule = new ScheduleService
+const schedule = new ScheduleService()
 
 router.get('/', 
     async (req, res, next) => {

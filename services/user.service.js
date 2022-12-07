@@ -19,7 +19,7 @@ class UserService {
 
   async uploadImage(files) {
     const bucket = getStorage().bucket()
-    const dirname = '/Users/Sneii/OneDrive/Documentos/fixed_project/fixed_backend/middleware/fixed/resize'
+    const dirname = '/Users/Sneii/OneDrive/Documentos/fixed-project/fixed-backend/middleware/fixed/resize'
     try {
       const filesURL = await uploadFiles(files, dirname, bucket)
       return filesURL
@@ -64,27 +64,33 @@ class UserService {
     return user
   }
 
-  async findTechnician(userId) {
+  async findTechnician(userId, isRemote) {
     try {
 
-      const [ cityId ] = await models.User.sequelize.query(`
-        SELECT addresses.cities_id
-          FROM addresses
-          INNER JOIN users ON users.id = addresses.users_id
-          WHERE addresses.users_id = ${userId} AND addresses.is_active = true
-      `)
+      if (isRemote === 'true') {
+        return 23
+      } else {
+        const [ cityId ] = await models.User.sequelize.query(`
+          SELECT addresses.cities_id
+            FROM addresses
+            INNER JOIN users ON users.id = addresses.users_id
+            WHERE addresses.users_id = ${userId} AND addresses.is_active = true
+        `)
+  
+        const [ technicalId ] = await models.User.sequelize.query(`
+          SELECT users.id, COUNT(*) requests_number
+            FROM users_requests
+            INNER JOIN users ON users.id = users_requests.users_id
+            INNER JOIN addresses ON addresses.users_id = users.id
+            WHERE is_technical = true AND cities_id = ${cityId[0].cities_id} AND users.id != ${userId} 
+            GROUP BY users.id
+            ORDER BY requests_number ASC
+        `)
 
-      const [ technicalId ] = await models.User.sequelize.query(`
-        SELECT users.id, COUNT(*) requests_number
-          FROM users_requests
-          INNER JOIN users ON users.id = users_requests.users_id
-          INNER JOIN addresses ON addresses.users_id = users.id
-          WHERE is_technical = true AND cities_id = ${cityId[0].cities_id} AND users.id != ${userId} 
-          GROUP BY users.id
-          ORDER BY requests_number ASC
-      `)
+        return technicalId[0].id
+      }
 
-      return technicalId[0]
+
     } catch (err) {
       throw boom.internal(err)
     }

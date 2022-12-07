@@ -5,9 +5,9 @@ const SCHEDULE_TABLE = 'schedules'
 const ScheduleSchema = {
     id: {
         allowNull: false,
-        primaryKey: true,
         autoIncrement: true,
         type: DataTypes.INTEGER,
+        primaryKey: true,
     },
     everyday: {
         allowNull: true,
@@ -35,6 +35,7 @@ const ScheduleSchema = {
     usersId: {
         allowNull: false,
         type: DataTypes.INTEGER,
+        unique: true,
         field: 'users_id'
     }
 }

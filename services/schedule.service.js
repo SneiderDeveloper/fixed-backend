@@ -27,16 +27,16 @@ class ScheduleService {
         }
     }
 
-    async create() {
+    async create(data) {
         try {
-            const response = await models.Schedule.create()
+            const response = await models.Schedule.create(data)
             return response
         } catch (err) {
-            throw boom.internal()
+            throw boom.internal(err)
         }
     }
 
-    async update(newData) {
+    async update(id, newData) {
         try {
             const schedule = await this.findOne(id)
             const response = await schedule.update(newData)
@@ -50,7 +50,7 @@ class ScheduleService {
         try {
             const schedule = await this.findOne(id)
             const response = await schedule.destroy()
-            return response
+            return { id, response }
         } catch (err) {
             throw boom.internal()
         }

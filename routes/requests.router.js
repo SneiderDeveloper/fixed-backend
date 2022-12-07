@@ -18,6 +18,18 @@ router.get('/',
     }
 )
 
+router.get('/:id',
+    async (req, res, next) => {
+        try {
+            const { id } = req.params
+            const data = await request.findOne(id)
+            res.json(data)
+        } catch (err) {
+            next(err)
+        }
+    }
+)
+
 router.post('/',
     validatorHandler(createRequestSchema, 'body'),
     async (req, res, next) => {
