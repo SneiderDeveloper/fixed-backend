@@ -1,6 +1,6 @@
 const Joi = require('joi')
 
-const userId = Joi.string().uuid()
+const id = Joi.number().integer()
 const names = Joi.string()
 const lastNames = Joi.string()
 const email = Joi.string().email()
@@ -9,13 +9,14 @@ const isActive = Joi.boolean()
 const isApproved = Joi.boolean()
 const isTechnical = Joi.boolean()
 const isVerified = Joi.boolean()
-const password = Joi.string().max(80)
+const password = Joi.string().max(255).allow(null, '')
 const avatar = Joi.string().allow(null, '')
 
 const createUserSchema = Joi.object({
     names: names.required(),
     lastNames: lastNames.required(),
     email: email.optional(),
+    password: password.optional(),
     isTechnical: isTechnical.required(),
     phoneNumber: phoneNumber.required(),
 })
@@ -33,7 +34,7 @@ const updateUserSchema = Joi.object({
 })
 
 const getUserSchema = Joi.object({
-    user_id: userId.required()
+    id: id.required()
 })
 
 module.exports = {

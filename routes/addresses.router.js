@@ -1,4 +1,5 @@
 const express = require('express')
+const passport = require('passport')
 const AddressService = require('../services/address.service')
 const validatorHandler = require('../middleware/validator.handler')
 const { createAddressSchema, updateAddressSchema } = require('../schemas/address.schema')
@@ -7,6 +8,7 @@ const router = express.Router()
 const address = new AddressService
 
 router.get('/',
+    passport.authenticate('jwt', { session: false }),
     async (req, res, next) => {
         try {
             const data = await address.read()
@@ -17,11 +19,12 @@ router.get('/',
     }
 )
 
-router.get('/:address_id',
+router.get('/:id',
+    passport.authenticate('jwt', { session: false }),
     async (req, res, next) => {
         try {
-            const { address_id } = req.params
-            const data = await address.findOne(address_id)
+            const { id } = req.params
+            const data = await address.findOne(id)
             res.json(data)
         } catch (err) {
             next(err)
@@ -29,23 +32,38 @@ router.get('/:address_id',
     }
 )
 
-router.get('/findByUserId/:user_id',
+router.get('/findByUserId/:id',
+    passport.authenticate('jwt', { session: false }),
+    async (req, res, next) => {
+        try {
+            const { id } = req.params
+            const data = await address.findByUserId(id)
+            res.json(data)
+        } catch (err) {
+            next(err)
+        }
+    }
+)
+
+router.get('/activateAddress/:user_id/:id',
+    passport.authenticate('jwt', { session: false }),
+    async (req, res, next) => {
+        try {
+            const { user_id, id } = req.params
+            const data = await address.activateAddress(user_id, id)
+            res.json(data)
+        } catch (err) {
+            next(err)
+        }
+    }
+)
+
+router.get('/findByActiveAddress/:user_id',
+    passport.authenticate('jwt', { session: false }),
     async (req, res, next) => {
         try {
             const { user_id } = req.params
-            const data = await address.findByUserId(user_id)
-            res.json(data)
-        } catch (err) {
-            next(err)
-        }
-    }
-)
-
-router.get('/activateAddress/:user_id/:address_id',
-    async (req, res, next) => {
-        try {
-            const { user_id, address_id } = req.params
-            const data = await address.activateAddress(user_id, address_id)
+            const data = await address.findByActiveAddress(user_id)
             res.json(data)
         } catch (err) {
             next(err)
@@ -54,6 +72,7 @@ router.get('/activateAddress/:user_id/:address_id',
 )
 
 router.post('/',
+    passport.authenticate('jwt', { session: false }),
     validatorHandler(createAddressSchema, 'body'),
     async (req, res, next) => {
         try {
@@ -66,12 +85,13 @@ router.post('/',
     }
 )
 
-router.patch('/:address_id',
+router.patch('/:id',
+    passport.authenticate('jwt', { session: false }),
     validatorHandler(updateAddressSchema, 'body'),
     async (req, res, next) => {
         try {
-            const { params: { address_id }, body } = req
-            const data = await address.update(address_id, body)
+            const { params: { id }, body } = req
+            const data = await address.update(id, body)
             res.json(data)
         } catch (err) {
             next(err)
@@ -79,11 +99,12 @@ router.patch('/:address_id',
     }
 )
 
-router.delete('/:address_id',
+router.delete('/:id',
+    passport.authenticate('jwt', { session: false }),
     async (req, res, next) => {
         try {
-            const { address_id } = req.params
-            const data = await address.delete(address_id)
+            const { id } = req.params
+            const data = await address.delete(id)
             res.json(data)
         } catch (err) {
             next(err)

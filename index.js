@@ -24,6 +24,7 @@ const options = {
 }
 
 app.use(cors(options))
+require('./utils/auth/index')
 app.use(express.json())
 
 app.get('/', (req, res) => {

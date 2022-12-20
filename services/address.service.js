@@ -78,6 +78,25 @@ class AddressService {
         }
     }
 
+    async findByActiveAddress(id) {
+        try {
+            const [ address ] = await models.Address.sequelize.query(`
+                SELECT 
+                    address,
+                    name,
+                    addresses.phone_number AS "phoneNumber",
+                    additional_data AS "additionalData",
+                    cities_id AS "citiesId"
+                    FROM addresses
+                    INNER JOIN users ON users.id = addresses.users_id
+                    WHERE addresses.is_active = true AND users_id = ${id}
+            `)
+            return address[0]
+        } catch (err) {
+            throw boom.internal(err)
+        }
+    }
+
     async create(data) {
         try {
             const [ id ] = await models.Address.sequelize.query(`

@@ -20,6 +20,18 @@ router.get('/',
     }
 )
 
+router.get('/:id', 
+    async (req, res, next) => {
+        try {
+            const { id } = req.params
+            const data = await schedule.findByUserId(id)
+            res.json(data)
+        } catch (err) {
+            next(err)
+        }
+    }
+)
+
 router.post('/',
     validatorHandler(createScheduleSchema, 'body'),
     async (req, res, next) => {

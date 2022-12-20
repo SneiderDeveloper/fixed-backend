@@ -17,6 +17,27 @@ class ScheduleService {
             throw boom.internal()
         }
     }
+
+    async findByUserId(id) {
+        try {
+            const [schedule] = await models.Schedule.sequelize.query(`
+                SELECT 
+                    schedules.id AS "id",
+                    workdays,
+                    "from",
+                    "to"
+                FROM schedules
+                INNER JOIN users ON users.id = schedules.users_id
+                WHERE users_id = ${id}
+            `)
+            if (!schedule) {
+                throw boom.notFound('Schedule not found')
+            }
+            return schedule[0]
+        } catch (err) {
+            throw boom.internal()
+        }
+    }
     
     async read() {
         try {

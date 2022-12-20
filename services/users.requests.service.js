@@ -50,11 +50,14 @@ class UsersRequestsService {
                             locations_id AS "locationsId",
                             names,
                             last_names AS "lastNames",
-                            phone_number AS "phoneNumber",
-                            avatar
+                            users.phone_number AS "phoneNumber",
+                            avatar,
+                            address,
+                            locations.phone_number AS "phoneNumberAddress"
                         FROM users_requests
                         INNER JOIN requests ON requests.id = users_requests.request_id
                         INNER JOIN users ON users.id = users_requests.users_id
+                        INNER JOIN locations ON locations.id = requests.locations_id
                         WHERE users_requests.request_id = ${request[i].request_id} AND users_requests.users_id != ${id}
                     `)
                     data.push(response[0])

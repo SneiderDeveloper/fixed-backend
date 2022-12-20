@@ -2,6 +2,7 @@ const express = require('express')
 const multer = require('multer')
 const upload = multer({ dest: 'uploads/' })
 const mimeTypes = require('mime-types')
+const passport = require('passport')
 const UserService = require('../services/user.service')
 const {
     createUserSchema,
@@ -48,94 +49,98 @@ const destination = dirnameSlash + originalPath
 // ])
 
 router.get('/',
-  // validatorHandler(getUserSchema, 'params'),
-  async (req, res, next) => {
-      try {
-          // const { user_id } = req.params
-          const userData = await user.read()
-          res.json(userData)
-      } catch (err) {
-          next(err)
-      }
-  }
+    passport.authenticate('jwt', { session: false }),
+    async (req, res, next) => {
+        try {
+            const userData = await user.read()
+            res.json(userData)
+        } catch (err) {
+            next(err)
+        }
+    }
 )
 
-router.get('/:phone_number',
-  // validatorHandler(getUserSchema, 'params'),
-  async (req, res, next) => {
-      try {
-          const { phone_number } = req.params
-          const userData = await user.findOneForPhoneNumber(phone_number)
-          res.json(userData)
-      } catch (err) {
-          next(err)
-      }
-  }
+router.get('/:phone_number',//Delete router, warning
+    passport.authenticate('jwt', { session: false }),
+    // validatorHandler(getUserSchema, 'params'),
+    async (req, res, next) => {
+        try {
+            const { phone_number } = req.params
+            const userData = await user.findOneForPhoneNumber(phone_number)
+            res.json(userData)
+        } catch (err) {
+            next(err)
+        }
+    }
 )
 
 router.get('/findTechnician/:user_id/:is_remote',
-  async (req, res, next) => {
-      try {
-          const { user_id, is_remote } = req.params
-          const technical = await user.findTechnician(user_id, is_remote)
-          res.json(technical)
-      } catch (err) {
-          next(err)
-      }
-  }
+    passport.authenticate('jwt', { session: false }),
+    async (req, res, next) => {
+        try {
+            const { user_id, is_remote } = req.params
+            const technical = await user.findTechnician(user_id, is_remote)
+            res.json(technical)
+        } catch (err) {
+            next(err)
+        }
+    }
 )
 
-router.get('/byUserId/:user_id',
-  // validatorHandler(getUserSchema, 'params'),
-  async (req, res, next) => {
-      try {
-          const { user_id } = req.params
-          const userData = await user.findOne(user_id)
-          res.json(userData)
-      } catch (err) {
-          next(err)
-      }
-  }
+router.get('/byUserId/:id',
+    passport.authenticate('jwt', { session: false }),
+    validatorHandler(getUserSchema, 'params'),
+    async (req, res, next) => {
+        try {
+            const { id } = req.params
+            const userData = await user.findOne(id)
+            res.json(userData)
+        } catch (err) {
+            next(err)
+        }
+    }
 )
 
 router.post('/',
-  validatorHandler(createUserSchema, 'body'),
-  async (req, res, next) => {
-      try {
-          const { body } = req
-          const newUser = await user.create(body)
-          res.json(newUser)
-      } catch (err) {
-          next(err)
-      }
-  }
+    validatorHandler(createUserSchema, 'body'),
+    async (req, res, next) => {
+        try {
+            const { body } = req
+            const newUser = await user.create(body)
+            res.json(newUser)
+        } catch (err) {
+            next(err)
+        }
+    }
 )
 
-router.patch('/:user_id',
-  // validatorHandler(getUserSchema, 'params'),
-  validatorHandler(updateUserSchema, 'body'),
-  async (req, res, next) => {
-      try {
-          const { params: { user_id }, body } = req
-          const userUpdate = await user.update(user_id, body)
-          res.json(userUpdate)
-      } catch (err) {
-          next(err)
-      }
-  }
+router.patch('/:id',
+    passport.authenticate('jwt', { session: false }),
+    validatorHandler(getUserSchema, 'params'),
+    validatorHandler(updateUserSchema, 'body'),
+    async (req, res, next) => {
+        try {
+            const { params: { id }, body } = req
+            const userUpdate = await user.update(id, body)
+            res.json(userUpdate)
+        } catch (err) {
+            next(err)
+        }
+    }
 )
 
-router.delete('/:user_id',
-  // validatorHandler(getUserSchema, 'params'),
-  async (req, res, next) => {
-      try {
-          const { user_id } = req.params
-          const deleteUser = await user.delete(user_id)
-          res.json(deleteUser)
-      } catch (err) {
-          next(err)
-      }
-  }
+router.delete('/:id',
+    passport.authenticate('jwt', { session: false }),
+    validatorHandler(getUserSchema, 'params'),
+    async (req, res, next) => {
+        try {
+            const { id } = req.params
+            const deleteUser = await user.delete(id)
+            res.json(deleteUser)
+        } catch (err) {
+            next(err)
+        }
+    }
 )
 
 router.post('/upload/card',

@@ -1,6 +1,7 @@
 const initializingSDKFirebase = require('./modules/initializingSDKFirebase')
-const { getStorage } = require('firebase-admin/storage')
+const { getStorage } = require('firebase/storage')
 const { encrypt } = require('./modules/crypt')
+const bcrypt = require('bcrypt')
 const position = require('./modules/position')
 const { uploadFiles } = require('./modules/uploadFile')
 const boom = require('@hapi/boom')
@@ -41,23 +42,9 @@ class UserService {
   }
 
   async findOneForPhoneNumber(phoneNumber) {
-    const [ user ] = await models.User.sequelize.query(`
-      SELECT 
-        id, 
-        names, 
-        last_names AS "lastNames", 
-        email, 
-        is_active AS "isActive", 
-        is_approved AS "isApproved", 
-        is_technical AS "isTechnical", 
-        is_verified AS "isVerified", 
-        phone_number AS "phoneNumber", 
-        start_date AS "startDate", 
-        avatar, 
-        password
-      FROM users
-      WHERE users.phone_number = ${phoneNumber}
-    `)
+    const user = await models.User.findOne({
+      where: { phoneNumber }
+    })
     if (!user) {
       throw boom.notFound('User not found')
     }
@@ -98,7 +85,15 @@ class UserService {
 
   async create(data) {
     try {
-      const response = await models.User.create(data)
+      let hash = null
+      if (data.password) {
+        hash = await bcrypt.hash(data.password, 10)
+      }
+      const response = await models.User.create({
+        ...data,
+        password: hash
+      })
+      delete response.dataValues.password
       return response
     } catch (err) {
       throw boom.internal(err)
