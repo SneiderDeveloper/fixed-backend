@@ -1,4 +1,5 @@
 const express = require('express')
+const passport = require('passport')
 const ScheduleService = require('../services/schedule.service')
 const validatorHandler = require('../middleware/validator.handler')
 const { 
@@ -9,7 +10,8 @@ const {
 const router = express.Router()
 const schedule = new ScheduleService()
 
-router.get('/', 
+router.get('/',
+    passport.authenticate('jwt', { session: false }),
     async (req, res, next) => {
         try {
             const data = await schedule.read()
@@ -21,6 +23,7 @@ router.get('/',
 )
 
 router.get('/:id', 
+    passport.authenticate('jwt', { session: false }),
     async (req, res, next) => {
         try {
             const { id } = req.params
@@ -33,6 +36,7 @@ router.get('/:id',
 )
 
 router.post('/',
+    passport.authenticate('jwt', { session: false }),
     validatorHandler(createScheduleSchema, 'body'),
     async (req, res, next) => {
         try {
@@ -46,6 +50,7 @@ router.post('/',
 )
 
 router.patch('/:schedule_id',
+    passport.authenticate('jwt', { session: false }),
     validatorHandler(updateScheduleSchema, 'body'),
     async (req, res, next) => {
         try {
@@ -58,7 +63,8 @@ router.patch('/:schedule_id',
     }
 )
 
-router.delete('/:schedule_id', 
+router.delete('/:schedule_id',
+    passport.authenticate('jwt', { session: false }),
     async (req, res, next) => {
         try {
             const { schedule_id } = req.params
