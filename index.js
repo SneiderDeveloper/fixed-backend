@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3001
 
 const whitelist = [
     'http://localhost:3000',
-    'https://fixed.com.co/',
+    'https://fixed.com.co',
     'http://192.168.101.9:3000'
 ]
 
