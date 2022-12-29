@@ -1,4 +1,5 @@
 const express = require('express')
+const passport = require('passport')
 const validatorHandler = require('../middleware/validator.handler')
 const { 
     createAdministratorSchema,
@@ -10,6 +11,7 @@ const router = express.Router()
 const admin = new AdminService()
 
 router.get('/',
+    passport.authenticate('jwt', { session: false }),
     async (req, res, next) => {
         try {
             const data = await admin.read()
@@ -21,6 +23,7 @@ router.get('/',
 )
 
 router.post('/',
+    passport.authenticate('jwt', { session: false }),
     validatorHandler(createAdministratorSchema, 'body'),
     async (req, res, next) => {
         try {
@@ -34,6 +37,7 @@ router.post('/',
 )
 
 router.patch('/:admin_id',
+    passport.authenticate('jwt', { session: false }),
     validatorHandler(updateAdministratorSchema, 'body'),
     async (req, res, next) => {
         try {
@@ -47,6 +51,7 @@ router.patch('/:admin_id',
 )
 
 router.delete('/:admin_id',
+    passport.authenticate('jwt', { session: false }),
     async (req, res, next) => {
         try {
             const { admin_id } = req.params

@@ -1,4 +1,5 @@
 const express = require('express')
+const passport = require('passport')
 const DocumentService = require('../services/document.service')
 const validatorHandler = require('../middleware/validator.handler')
 const { createDocumentSchema, updateDocumentSchema } = require('../schemas/document.schema')
@@ -7,6 +8,7 @@ const router = express.Router()
 const document = new DocumentService()
 
 router.get('/',
+    passport.authenticate('jwt', { session: false }),
     async (req, res, next) => {
         try {
             const data = await document.read()
@@ -18,6 +20,7 @@ router.get('/',
 )
 
 router.post('/',
+    passport.authenticate('jwt', { session: false }),
     validatorHandler(createDocumentSchema, 'body'),
     async (req, res, next) => {
         try {
@@ -30,12 +33,13 @@ router.post('/',
     }
 )
 
-router.patch('/:document_id',
+router.patch('/:id',
+    passport.authenticate('jwt', { session: false }),
     validatorHandler(updateDocumentSchema, 'body'),
     async (req, res, next) => {
         try {
-            const { params: { document_id }, body } = req
-            const data = await document.update(document_id, body)
+            const { params: { id }, body } = req
+            const data = await document.update(id, body)
             res.json(data)
         } catch (err) {
             next(err)
@@ -43,11 +47,12 @@ router.patch('/:document_id',
     }
 )
 
-router.delete('/:document_id',
+router.delete('/:id',
+    passport.authenticate('jwt', { session: false }),
     async (req, res, next) => {
         try {
-            const { params: { document_id } } = req
-            const data = await document.delete(document_id)
+            const { params: { id } } = req
+            const data = await document.delete(id)
             res.json(data)
         } catch (err) {
             next(err)
