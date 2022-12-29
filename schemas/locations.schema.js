@@ -1,5 +1,6 @@
 const Joi = require('joi')
 
+const id = Joi.number().integer()
 const address = Joi.string()
 const isActive = Joi.boolean()
 const name = Joi.string()
@@ -24,4 +25,12 @@ const updateLocationSchema = Joi.object({
     citiesId: citiesId.optional(),
 })
 
-module.exports = { createLocationSchema, updateLocationSchema }
+const getLocationSchema = Joi.object({
+    id: id.required()
+})
+
+module.exports = { 
+    createLocationSchema, 
+    updateLocationSchema, 
+    getLocationSchema 
+}

@@ -28,11 +28,8 @@ class UsersRequestsService {
                     WHERE users_requests.users_id = ${id}
                     ORDER BY date_of_visit ASC
             `)
-            // if (request.length < 1 ) {
-            //     throw boom.notFound('Requests not found')
-            // }
+            let data = []
             if (request.length > 0) {
-                let data = []
                 for(let i=0; i<request.length; i++) {
                     const [ response ] = await models.UsersRequests.sequelize.query(`
                         SELECT
@@ -53,18 +50,20 @@ class UsersRequestsService {
                             locations_id AS "locationsId",
                             names,
                             last_names AS "lastNames",
-                            avatar
+                            users.phone_number AS "phoneNumber",
+                            avatar,
+                            address,
+                            locations.phone_number AS "phoneNumberAddress"
                         FROM users_requests
                         INNER JOIN requests ON requests.id = users_requests.request_id
                         INNER JOIN users ON users.id = users_requests.users_id
+                        INNER JOIN locations ON locations.id = requests.locations_id
                         WHERE users_requests.request_id = ${request[i].request_id} AND users_requests.users_id != ${id}
                     `)
                     data.push(response[0])
                 }
-                return data
-            } else {
-                throw boom.notFound('Requests not found')
             }
+            return data
         } catch (err) {
             throw boom.internal(err)
         }

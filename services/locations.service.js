@@ -31,6 +31,16 @@ class LocationService {
             throw boom.internal(err)
         }
     }
+
+    async update(id, newData) {
+        try {
+            const location = await this.findOne(id)
+            const response = await location.update(newData)
+            return response
+        } catch (err) {
+            throw boom.internal(err)
+        }
+    }
 }
 
 module.exports = LocationService

@@ -5,24 +5,13 @@ const SCHEDULE_TABLE = 'schedules'
 const ScheduleSchema = {
     id: {
         allowNull: false,
-        primaryKey: true,
         autoIncrement: true,
         type: DataTypes.INTEGER,
+        primaryKey: true,
     },
-    everyday: {
-        allowNull: true,
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-    },
-    weekday: {
-        allowNull: true,
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-    },
-    weekends: {
-        allowNull: true,
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
+    workdays: {
+        allowNull: false,
+        type: DataTypes.STRING(15),
     },
     from: {
         allowNull: false,
@@ -35,6 +24,7 @@ const ScheduleSchema = {
     usersId: {
         allowNull: false,
         type: DataTypes.INTEGER,
+        unique: true,
         field: 'users_id'
     }
 }

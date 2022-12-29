@@ -1,6 +1,7 @@
 const initializingSDKFirebase = require('./modules/initializingSDKFirebase')
-const { getStorage } = require('firebase-admin/storage')
+const { getStorage } = require('firebase/storage')
 const { encrypt } = require('./modules/crypt')
+const bcrypt = require('bcrypt')
 const position = require('./modules/position')
 const { uploadFiles } = require('./modules/uploadFile')
 const boom = require('@hapi/boom')
@@ -19,7 +20,7 @@ class UserService {
 
   async uploadImage(files) {
     const bucket = getStorage().bucket()
-    const dirname = '/Users/Sneii/OneDrive/Documentos/fixed_project/fixed_backend/middleware/fixed/resize'
+    const dirname = '/Users/Sneii/OneDrive/Documentos/fixed-project/fixed-backend/middleware/fixed/resize'
     try {
       const filesURL = await uploadFiles(files, dirname, bucket)
       return filesURL
@@ -41,50 +42,42 @@ class UserService {
   }
 
   async findOneForPhoneNumber(phoneNumber) {
-    const [ user ] = await models.User.sequelize.query(`
-      SELECT 
-        id, 
-        names, 
-        last_names AS "lastNames", 
-        email, 
-        is_active AS "isActive", 
-        is_approved AS "isApproved", 
-        is_technical AS "isTechnical", 
-        is_verified AS "isVerified", 
-        phone_number AS "phoneNumber", 
-        start_date AS "startDate", 
-        avatar, 
-        password
-      FROM users
-      WHERE users.phone_number = ${phoneNumber}
-    `)
+    const user = await models.User.findOne({
+      where: { phoneNumber }
+    })
     if (!user) {
       throw boom.notFound('User not found')
     }
     return user
   }
 
-  async findTechnician(userId) {
+  async findTechnician(userId, isRemote) {
     try {
 
-      const [ cityId ] = await models.User.sequelize.query(`
-        SELECT addresses.cities_id
-          FROM addresses
-          INNER JOIN users ON users.id = addresses.users_id
-          WHERE addresses.users_id = ${userId} AND addresses.is_active = true
-      `)
+      if (isRemote === 'true') {
+        return 23
+      } else {
+        const [ cityId ] = await models.User.sequelize.query(`
+          SELECT addresses.cities_id
+            FROM addresses
+            INNER JOIN users ON users.id = addresses.users_id
+            WHERE addresses.users_id = ${userId} AND addresses.is_active = true
+        `)
+  
+        const [ technicalId ] = await models.User.sequelize.query(`
+          SELECT users.id, COUNT(*) requests_number
+            FROM users_requests
+            INNER JOIN users ON users.id = users_requests.users_id
+            INNER JOIN addresses ON addresses.users_id = users.id
+            WHERE is_technical = true AND cities_id = ${cityId[0].cities_id} AND users.id != ${userId} 
+            GROUP BY users.id
+            ORDER BY requests_number ASC
+        `)
 
-      const [ technicalId ] = await models.User.sequelize.query(`
-        SELECT users.id, COUNT(*) requests_number
-          FROM users_requests
-          INNER JOIN users ON users.id = users_requests.users_id
-          INNER JOIN addresses ON addresses.users_id = users.id
-          WHERE is_technical = true AND cities_id = ${cityId[0].cities_id} AND users.id != ${userId} 
-          GROUP BY users.id
-          ORDER BY requests_number ASC
-      `)
+        return technicalId[0].id
+      }
 
-      return technicalId[0]
+
     } catch (err) {
       throw boom.internal(err)
     }
@@ -92,7 +85,15 @@ class UserService {
 
   async create(data) {
     try {
-      const response = await models.User.create(data)
+      let hash = null
+      if (data.password) {
+        hash = await bcrypt.hash(data.password, 10)
+      }
+      const response = await models.User.create({
+        ...data,
+        password: hash
+      })
+      delete response.dataValues.password
       return response
     } catch (err) {
       throw boom.internal(err)
