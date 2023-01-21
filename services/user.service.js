@@ -53,9 +53,8 @@ class UserService {
 
   async findTechnician(userId, isRemote) {
     try {
-
       if (isRemote === 'true') {
-        return 23
+        return 186
       } else {
         const [ cityId ] = await models.User.sequelize.query(`
           SELECT addresses.cities_id
@@ -63,21 +62,28 @@ class UserService {
             INNER JOIN users ON users.id = addresses.users_id
             WHERE addresses.users_id = ${userId} AND addresses.is_active = true
         `)
-  
-        const [ technicalId ] = await models.User.sequelize.query(`
-          SELECT users.id, COUNT(*) requests_number
-            FROM users_requests
-            INNER JOIN users ON users.id = users_requests.users_id
-            INNER JOIN addresses ON addresses.users_id = users.id
-            WHERE is_technical = true AND cities_id = ${cityId[0].cities_id} AND users.id != ${userId} 
-            GROUP BY users.id
-            ORDER BY requests_number ASC
+
+        const [ weAreHere ] = await models.User.sequelize.query(`
+          SELECT cities.we_are_here
+          FROM cities
+          WHERE cities.we_are_here = true AND cities.id = ${cityId[0].cities_id}
         `)
 
-        return technicalId[0].id
+        if (weAreHere[0]) {
+          const [ technicalId ] = await models.User.sequelize.query(`
+            SELECT users.id, COUNT(*) requests_number
+              FROM users_requests
+              INNER JOIN users ON users.id = users_requests.users_id
+              INNER JOIN addresses ON addresses.users_id = users.id
+              WHERE is_technical = true AND cities_id = ${cityId[0].cities_id} AND users.id != ${userId} 
+              GROUP BY users.id
+              ORDER BY requests_number ASC
+          `)
+          return technicalId[0].id
+        } else return 186
+  
+
       }
-
-
     } catch (err) {
       throw boom.internal(err)
     }
