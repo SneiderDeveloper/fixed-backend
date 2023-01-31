@@ -23,7 +23,9 @@ class ScheduleService {
             const [schedule] = await models.Schedule.sequelize.query(`
                 SELECT 
                     schedules.id AS "id",
-                    workdays,
+                    everyday,
+                    weekday,
+                    weekends,
                     "from",
                     "to"
                 FROM schedules

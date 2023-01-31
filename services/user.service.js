@@ -1,5 +1,4 @@
-const initializingSDKFirebase = require('./modules/initializingSDKFirebase')
-const { getStorage } = require('firebase/storage')
+const admin = require('firebase-admin');
 const { encrypt } = require('./modules/crypt')
 const bcrypt = require('bcrypt')
 const position = require('./modules/position')
@@ -12,17 +11,15 @@ const { models } = require('../libs/sequelize')
 
 class UserService {
   constructor() {
-    this.users = []
-    initializingSDKFirebase()
-    this.pool = pool
-    this.pool.on('error', (err) => console.error(err))
+    // this.pool = pool
+    // this.pool.on('error', (err) => console.error(err))
   }
 
   async uploadImage(files) {
-    const bucket = getStorage().bucket()
-    const dirname = '/Users/Sneii/OneDrive/Documentos/fixed-project/fixed-backend/middleware/fixed/resize'
     try {
-      const filesURL = await uploadFiles(files, dirname, bucket)
+      const bucket = admin.storage().bucket()
+      const patch = './resize'
+      const filesURL = await uploadFiles(files, patch, bucket)
       return filesURL
     } catch (err) {
       throw boom.failedDependency(err)

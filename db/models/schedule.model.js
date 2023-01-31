@@ -9,9 +9,20 @@ const ScheduleSchema = {
         type: DataTypes.INTEGER,
         primaryKey: true,
     },
-    workdays: {
-        allowNull: false,
-        type: DataTypes.STRING(15),
+    everyday: {
+        allowNull: true,
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+    },
+    weekday: {
+        allowNull: true,
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+    },
+    weekends: {
+        allowNull: true,
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
     },
     from: {
         allowNull: false,

@@ -11,15 +11,20 @@ const DocumentSchema = {
         primaryKey: true,
         type: DataTypes.INTEGER,
     },
-    idFront: {
+    idCardFront: {
         allowNull: false,
         type: DataTypes.STRING,
-        field: 'id_front'
+        field: 'id_card_front'
     },
-    idBack: {
+    idCardBack: {
         allowNull: false,
         type: DataTypes.STRING,
-        field: 'id_back'
+        field: 'id_card_back'
+    },
+    IdCardAndFace: {
+        allowNull: false,
+        type: DataTypes.STRING,
+        field: 'Id_card_and_face'
     },
     usersId: {
         allowNull: false,

@@ -4,7 +4,7 @@ function uploadFile(fileLocation, options, filename, uuid, bucket, fieldName) {
   return new Promise((resolve, reject) => {
     bucket.upload(fileLocation, options, function(err, file) {
       if (err) reject(err)
-      const bucketName = file.bucket.name
+      const bucketName = "fixed-72bee.appspot.com"
       const fileURL = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${filename}?alt=media&token=${uuid}`
       resolve({
         fileURL,

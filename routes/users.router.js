@@ -1,9 +1,9 @@
 const express = require('express')
 const multer = require('multer')
-const upload = multer({ dest: 'uploads/' })
 const mimeTypes = require('mime-types')
 const passport = require('passport')
 const UserService = require('../services/user.service')
+const DocumentService = require('../services/document.service')
 const {
     createUserSchema,
     updateUserSchema,
@@ -14,39 +14,38 @@ const transformImage = require('../middleware/transform.image.handler')
 
 const router = express.Router()
 const user = new UserService()
+const document = new DocumentService()
 
 const LIMIT_FILE = 1
-const dirnameSlash = '/Users/Sneii/OneDrive/Documentos/fixed-project/fixed-backend/middleware'
-const originalPath = '/fixed/original/'
-const destination = dirnameSlash + originalPath
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, '/tmp/my-uploads')
-//   },
-//   filename: function(req, file, cb) {
-//     const name = Date.now()
-//     const extension = mimeTypes.extension(file.mimetype)
-//     cb(null, `${name}.${extension}`)
-//   }
-// })
-// const upload = multer({
-//   storage: storage
-// })
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/')
+  },
+  filename: function(req, file, cb) {
+    const date = Date.now()
+    const ramdonNumber = Math.round(Math.random() * 10)
+    const extension = mimeTypes.extension(file.mimetype)
+    cb(null, `${date}${ramdonNumber}.${extension}`)
+  }
+})
+const upload = multer({
+  storage: storage
+})
 
-// const cpUpload = upload.fields([
-//   {
-//     name: 'cardFont',
-//     maxCount: LIMIT_FILE
-//   },
-//   {
-//     name: 'cardBack',
-//     maxCount: LIMIT_FILE
-//   },
-//   {
-//     name: 'face',
-//     maxCount: LIMIT_FILE
-//   },
-// ])
+const cpUpload = upload.fields([
+  {
+    name: 'cardFront',
+    maxCount: LIMIT_FILE
+  },
+  {
+    name: 'cardBack',
+    maxCount: LIMIT_FILE
+  },
+  {
+    name: 'face',
+    maxCount: LIMIT_FILE
+  },
+])
 
 router.get('/',
     passport.authenticate('jwt', { session: false }),
@@ -144,37 +143,43 @@ router.delete('/:id',
 )
 
 router.post('/upload/card',
-  upload.array('photos', 12), 
-  (req, res, next) => {
-    try {
-      res.json(req.files)  
-    } catch (err) {
-      next(err)
+    cpUpload,
+    transformImage(500),
+    async (req, res, next) => {
+        try {
+            const files = req.files
+            const filesURL = await user.uploadImage(files)
+            req.filesURL = filesURL
+            res.json(filesURL)
+            next()
+        } catch (err) {
+            next(err)
+        }
+    },
+    async (req, res, next) => {
+        try {
+            const id = req.body.id
+            const filesURL = req.filesURL
+            const body = {
+                idCardFront: filesURL[0].fileURL,
+                idCardBack: filesURL[1].fileURL,
+                IdCardAndFace: filesURL[2].fileURL,
+                usersId: id
+            }
+            console.log(body)
+            const newDocument = await document.create(body)
+            res.json(newDocument)
+        } catch (err) {
+            next(err)
+        }
+    },
+    async (req, res, next) => {
+        try {
+            
+        } catch (err) {
+            next(err)
+        }
     }
-  },
-  // transformImage(500),
-  // async (req, res, next) => {
-  //   try {
-  //     const files = req.files
-  //     console.log(files)
-  //     res.json(req.body.id)
-  //     // const filesURL = await user.uploadImage(files)
-  //     // req.filesURL = filesURL
-  //     next()
-  //   } catch (err) {
-  //     next(err)
-  //   }
-  // },
-  //   async (req, res, next) => {
-  //     try {
-  //       const id = req.body.id
-  //       const identity = req.filesURL
-  //       // const update = await user.create(id, { users_id: id})
-  //       res.json(identity)
-  //     } catch (err) {
-  //       next(err)
-  //     }
-  //   }
 )
 
 router.get('/geo',

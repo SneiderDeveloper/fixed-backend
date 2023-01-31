@@ -1,5 +1,7 @@
 const express = require('express')
 const routerApi = require('./routes/')
+const admin = require('firebase-admin');
+const serviceAccount = require('./services/modules/fixed-72bee-firebase-adminsdk-gqmb6-aa5ea9b276.json')
 const cors = require('cors')
 const { 
     errorHandleBoom, 
@@ -23,9 +25,18 @@ const options = {
     }
 }
 
+// function initializeAppSDK(req, res, next) {
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+        storageBucket: "fixed-72bee.appspot.com",
+    });
+//     next()
+// }
+
 app.use(cors(options))
 require('./utils/auth/index')
 app.use(express.json())
+// app.use(initializeAppSDK)
 
 app.get('/', (req, res) => {
     res.send('Fixed API')
