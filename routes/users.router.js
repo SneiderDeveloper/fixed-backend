@@ -1,5 +1,6 @@
 const express = require('express')
 const multer = require('multer')
+const fs = require('fs')
 const mimeTypes = require('mime-types')
 const passport = require('passport')
 const UserService = require('../services/user.service')
@@ -166,16 +167,33 @@ router.post('/upload/card',
                 IdCardAndFace: filesURL[2].fileURL,
                 usersId: id
             }
-            console.log(body)
             const newDocument = await document.create(body)
             res.json(newDocument)
+            next()
         } catch (err) {
             next(err)
         }
     },
     async (req, res, next) => {
         try {
-            
+            const files = req.files
+            const drop = (path) => {
+                fs.unlink(path, (err) => {
+                    next(err)
+                })
+            }
+            for (let file in files) {
+                let filename = files[file][0].filename
+                const dirname = './resize'
+                let path = `${dirname}/${filename}`
+                drop(path)
+            }
+            for (let file in files) {
+                let filename = files[file][0].filename
+                const dirname = './uploads'
+                let path = `${dirname}/${filename}`
+                drop(path)
+            }
         } catch (err) {
             next(err)
         }
