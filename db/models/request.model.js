@@ -92,6 +92,12 @@ const RequestSchema = {
         },
         onUpdate: 'CASCADE',
         onDelete: 'RESTRICT'
+    },
+    isPaid: {
+        allowNull: true,
+        type: DataTypes.BOOLEAN,
+        field: 'is_paid',
+        defaultValue: false,
     }
 }
 

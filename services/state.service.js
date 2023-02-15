@@ -41,16 +41,16 @@ class StateService {
 
     async create(data) {
         try {
-            const client = await getConnection()
-            const result = data.map(async (item) => {
-                const response = await client.query(`
-                    INSERT INTO cities(
-                        name, we_are_here, states_id)
-                        VALUES ('${item}', FALSE, 34)
-                `)
-                return response.rows
-            })
-            return result
+            // const client = await getConnection()
+            // const result = data.map(async (item) => {
+            //     const response = await client.query(`
+            //         INSERT INTO cities(
+            //             name, we_are_here, states_id)
+            //             VALUES ('${item}', FALSE, 34)
+            //     `)
+            //     return response.rows
+            // })
+            // return result
         } catch (err) {
             throw boom.badRequest(err)
         }

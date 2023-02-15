@@ -144,6 +144,7 @@ router.delete('/:id',
 )
 
 router.post('/upload/card',
+    passport.authenticate('jwt', { session: false }),
     cpUpload,
     transformImage(500),
     async (req, res, next) => {
@@ -151,7 +152,6 @@ router.post('/upload/card',
             const files = req.files
             const filesURL = await user.uploadImage(files)
             req.filesURL = filesURL
-            res.json(filesURL)
             next()
         } catch (err) {
             next(err)
@@ -198,17 +198,6 @@ router.post('/upload/card',
             next(err)
         }
     }
-)
-
-router.get('/geo',
-  async (req, res, next) => {
-      try {
-          const geolocation = await user.geolocation()
-          res.json(geolocation)
-      } catch (err) {
-          next(err)
-      }
-  }
 )
 
 module.exports = router

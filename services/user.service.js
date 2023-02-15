@@ -1,18 +1,15 @@
 const admin = require('firebase-admin');
 const { encrypt } = require('./modules/crypt')
 const bcrypt = require('bcrypt')
-const position = require('./modules/position')
 const { uploadFiles } = require('./modules/uploadFile')
 const boom = require('@hapi/boom')
-const fetch = require('node-fetch')
 const { v4: uuidv4 } = require('uuid')
 const pool = require('../libs/postgres.pool')
 const { models } = require('../libs/sequelize')
 
 class UserService {
   constructor() {
-    // this.pool = pool
-    // this.pool.on('error', (err) => console.error(err))
+    
   }
 
   async uploadImage(files) {
@@ -130,28 +127,6 @@ class UserService {
     } catch (err) {
       throw boom.internal(err)
     }
-  }
-
-  async geolocation() {
-      try {
-        const { latitude, longitude } = await position()
-        const APIKEY = process.env.API_KEY_GOOGLE_MAP
-        const lat = latitude
-        const lng = longitude
-        if (lat && lng) {
-          const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${APIKEY}`
-          const data = await fetch(url)
-          const dataLocation = await data.json()
-          const state = dataLocation.results[4].address_components[0].long_name
-          const city = dataLocation.results[1].address_components[1].long_name
-          return {
-            state,
-            city
-          }
-        }
-      } catch (err) {
-        throw boom.failedDependency(err)
-      }
   }
 }
 

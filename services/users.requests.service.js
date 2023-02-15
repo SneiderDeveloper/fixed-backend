@@ -46,6 +46,7 @@ class UsersRequestsService {
                             request_date AS "requestDate",
                             date_of_visit AS "dateOfVisit",
                             status,
+                            is_paid as "isPaid",
                             service_value AS "serviceValue",
                             locations_id AS "locationsId",
                             names,
