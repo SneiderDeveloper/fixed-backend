@@ -89,7 +89,7 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
-services/modules/fixed-72bee-3a386619e4db.json
+services/modules/fixed-72bee-firebase-adminsdk-gqmb6-094ff5da79.json
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/

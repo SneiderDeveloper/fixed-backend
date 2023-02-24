@@ -48,7 +48,7 @@ class UserService {
   async findTechnician(userId, isRemote) {
     try {
       if (isRemote === 'true') {
-        return 186
+        return 2
       } else {
         const [ cityId ] = await models.User.sequelize.query(`
           SELECT addresses.cities_id
@@ -74,9 +74,7 @@ class UserService {
               ORDER BY requests_number ASC
           `)
           return technicalId[0].id
-        } else return 186
-  
-
+        } else return 2
       }
     } catch (err) {
       throw boom.internal(err)
