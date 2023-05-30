@@ -8,6 +8,7 @@ const { UsersRequests, UsersRequestsSchema } = require('./users.requests.model')
 const { Cities, CitiesSchema } = require('./cities.model')
 const { Location, LocationSchema } = require('./locations.model')
 const { State, StateSchema } = require('./state.model')
+const { Feedback, FeedbackSchema } = require('./feedback.model')
 
 function setupModels(sequelize) {
     User.init(UserSchema, User.config(sequelize))
@@ -20,6 +21,7 @@ function setupModels(sequelize) {
     Cities.init(CitiesSchema, Cities.config(sequelize))
     Location.init(LocationSchema, Location.config(sequelize))
     State.init(StateSchema, State.config(sequelize))
+    Feedback.init(FeedbackSchema, Feedback.config(sequelize))
 
     Document.associate(sequelize.models)
     User.associate(sequelize.models)

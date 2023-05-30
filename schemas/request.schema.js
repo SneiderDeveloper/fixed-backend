@@ -9,19 +9,23 @@ const atHome = Joi.boolean()
 const atBusiness = Joi.boolean()
 const atRemote = Joi.boolean()
 const missionCompletedDate = Joi.date()
-const dateOfVisit = Joi.date()
+const contactDate = Joi.date()
 const status = Joi.number()
 const serviceValue = Joi.number()
 const locationsId = Joi.number()
 const isPaid = Joi.boolean()
+const repairDate = Joi.date()
+const deviceDeliveryDate =  Joi.date()
+const deliverAtHome = Joi.boolean()
+const deliverAtBusiness = Joi.boolean()
 
 const createRequestSchema = Joi.object({
     crux: crux.required(),
     atHome: atHome.optional(),
     atBusiness: atBusiness.optional(),
     atRemote: atRemote.optional(),
-    dateOfVisit: dateOfVisit.required(),
-    locationsId: locationsId.required()
+    contactDate: contactDate.required(),
+    locationsId: locationsId.required(),
 })
 
 const updateRequestSchema = Joi.object({
@@ -33,12 +37,16 @@ const updateRequestSchema = Joi.object({
     atHome: atHome.optional(),
     atBusiness: atBusiness.optional(),
     atRemote: atRemote.optional(),
-    missionCompletedDate: missionCompletedDate.optional(),
     status: status.optional(),
     serviceValue: serviceValue.optional(),
-    dateOfVisit: dateOfVisit.optional(),
+    contactDate: contactDate.optional(),
+    repairDate: repairDate.optional(),
+    deviceDeliveryDate: deviceDeliveryDate.optional(),
+    missionCompletedDate: missionCompletedDate.optional(),
     locationsId: locationsId.optional(),
-    isPaid: isPaid.optional()
+    isPaid: isPaid.optional(),
+    deliverAtHome: deliverAtHome.optional(),
+    deliverAtBusiness: deliverAtBusiness.optional(),
 })
 
 module.exports = {

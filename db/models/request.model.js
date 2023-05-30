@@ -66,10 +66,20 @@ const RequestSchema = {
         defaultValue: Sequelize.NOW,
         field: 'request_date'
     },
-    dateOfVisit: {
+    contactDate: {
         allowNull: false,
         type: DataTypes.DATE,
-        field: 'date_of_visit'
+        field: 'contact_date'
+    },
+    repairDate: {
+        allowNull: true,
+        type: DataTypes.DATE,
+        field: 'repair_date'
+    },
+    deviceDeliveryDate: {
+        allowNull: true,
+        type: DataTypes.DATE,
+        field: 'device_delivery_date'
     },
     status: {
         allowNull: true,
@@ -98,7 +108,19 @@ const RequestSchema = {
         type: DataTypes.BOOLEAN,
         field: 'is_paid',
         defaultValue: false,
-    }
+    },
+    deliverAtHome: {
+        allowNull: true,
+        type: DataTypes.BOOLEAN,
+        field: 'deliver_at_home',
+        defaultValue: false,
+    },
+    deliverAtBusiness: {
+        allowNull: true,
+        type: DataTypes.BOOLEAN,
+        field: 'deliver_at_business',
+        defaultValue: false,
+    },
 }
 
 class Request extends Model {

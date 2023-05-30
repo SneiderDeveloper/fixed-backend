@@ -66,7 +66,19 @@ const UserSchema = {
     avatar: {
         allowNull: true,
         type: DataTypes.STRING, 
-    }
+    },
+    isCompany: {
+        allowNull: true,
+        type: DataTypes.BOOLEAN,
+        field: 'is_company',
+        defaultValue: false,
+    },
+    isShop: {
+        allowNull: false,
+        type: DataTypes.BOOLEAN,
+        field: 'is_shop',
+        defaultValue: false,
+    },
 }
 
 class User extends Model {

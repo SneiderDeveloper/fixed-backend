@@ -26,7 +26,7 @@ class UsersRequestsService {
                     FROM users_requests
                     INNER JOIN requests ON requests.id = users_requests.request_id
                     WHERE users_requests.users_id = ${id}
-                    ORDER BY date_of_visit ASC
+                    ORDER BY contact_date ASC
             `)
             let data = []
             if (request.length > 0) {
@@ -43,8 +43,9 @@ class UsersRequestsService {
                             at_business AS "atBusiness",
                             at_remote AS "atRemote",
                             mission_completed_date AS "missionCompletedDate",
+                            repair_date AS "repairDate",
                             request_date AS "requestDate",
-                            date_of_visit AS "dateOfVisit",
+                            contact_date AS "contactDate",
                             status,
                             is_paid as "isPaid",
                             service_value AS "serviceValue",
@@ -53,12 +54,17 @@ class UsersRequestsService {
                             last_names AS "lastNames",
                             users.phone_number AS "phoneNumber",
                             avatar,
-                            address,
+                            deliver_at_home AS "deliverAtHome",
+                            deliver_at_business AS "deliverAtBusiness",
+                            addresses.address AS "addressTechnical",
+                            locations.address,
+                            locations.additional_data AS "additionalData",
                             locations.phone_number AS "phoneNumberAddress"
                         FROM users_requests
                         INNER JOIN requests ON requests.id = users_requests.request_id
                         INNER JOIN users ON users.id = users_requests.users_id
                         INNER JOIN locations ON locations.id = requests.locations_id
+                        INNER JOIN addresses ON addresses.users_id = users.id
                         WHERE users_requests.request_id = ${request[i].request_id} AND users_requests.users_id != ${id}
                     `)
                     data.push(response[0])

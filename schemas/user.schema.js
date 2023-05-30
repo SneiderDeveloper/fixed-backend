@@ -11,6 +11,8 @@ const isTechnical = Joi.boolean()
 const isVerified = Joi.boolean()
 const password = Joi.string().max(255).allow(null, '')
 const avatar = Joi.string().allow(null, '')
+const isCompany = Joi.boolean()
+const isShop = Joi.boolean()
 
 const createUserSchema = Joi.object({
     names: names.required(),
@@ -19,6 +21,8 @@ const createUserSchema = Joi.object({
     password: password.optional(),
     isTechnical: isTechnical.required(),
     phoneNumber: phoneNumber.required(),
+    isCompany: isCompany.optional(),
+    isShop: isShop.required(),
 })
 
 const updateUserSchema = Joi.object({
@@ -31,6 +35,8 @@ const updateUserSchema = Joi.object({
     isVerified: isVerified.optional(),
     password: password.optional(),
     avatar: avatar.optional(),
+    isCompany: isCompany.optional(),
+    isShop: isShop.optional(),
 })
 
 const getUserSchema = Joi.object({

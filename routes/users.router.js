@@ -29,6 +29,7 @@ const storage = multer.diskStorage({
     cb(null, `${date}${ramdonNumber}.${extension}`)
   }
 })
+
 const upload = multer({
   storage: storage
 })
@@ -144,7 +145,7 @@ router.delete('/:id',
 )
 
 router.post('/upload/card',
-    passport.authenticate('jwt', { session: false }),
+    // passport.authenticate('jwt', { session: false }),
     cpUpload,
     transformImage(500),
     async (req, res, next) => {
