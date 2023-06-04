@@ -11,8 +11,9 @@ class FeedbackService {
     async create(data) {
         try {
             const db = getFirestore()
-            const response = await db.collection('feedback').add(data)
-            return response
+            data.date = new Date()
+            await db.collection('feedback').add(data)
+            return data
         } catch (err) {
             throw boom.internal(err)
         }

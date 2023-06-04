@@ -45,12 +45,12 @@ router.get('/findByUserId/:id',
     }
 )
 
-router.get('/activateAddress/:user_id/:id',
+router.get('/activateAddress/:user_id/:address_id',
     passport.authenticate('jwt', { session: false }),
     async (req, res, next) => {
         try {
-            const { user_id, id } = req.params
-            const data = await address.activateAddress(user_id, id)
+            const { user_id, address_id } = req.params
+            const data = await address.activateAddress(user_id, address_id)
             res.json(data)
         } catch (err) {
             next(err)

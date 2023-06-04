@@ -53,10 +53,6 @@ const UserSchema = {
         field: 'phone_number',
         unique: true,
     },
-    password: {
-        allowNull: true,
-        type: DataTypes.STRING,
-    },
     startDate: {
         allowNull: false,
         type: DataTypes.DATE,
@@ -67,16 +63,32 @@ const UserSchema = {
         allowNull: true,
         type: DataTypes.STRING, 
     },
+    password: {
+        allowNull: true,
+        type: DataTypes.STRING,
+    },
+    isSuspended: {
+        allowNull: true,
+        type: DataTypes.BOOLEAN,
+        field: 'is_suspended',
+        defaultValue: false,
+    },
     isCompany: {
         allowNull: true,
         type: DataTypes.BOOLEAN,
         field: 'is_company',
         defaultValue: false,
     },
-    isShop: {
-        allowNull: false,
+    officeAvailability: {
+        allowNull: true,
         type: DataTypes.BOOLEAN,
-        field: 'is_shop',
+        field: 'office_availability',
+        defaultValue: false,
+    },
+    onsiteServiceAvailability: {
+        allowNull: true,
+        type: DataTypes.BOOLEAN,
+        field: 'onsite_service_availability',
         defaultValue: false,
     },
 }

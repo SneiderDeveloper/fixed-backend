@@ -71,16 +71,6 @@ const RequestSchema = {
         type: DataTypes.DATE,
         field: 'contact_date'
     },
-    repairDate: {
-        allowNull: true,
-        type: DataTypes.DATE,
-        field: 'repair_date'
-    },
-    deviceDeliveryDate: {
-        allowNull: true,
-        type: DataTypes.DATE,
-        field: 'device_delivery_date'
-    },
     status: {
         allowNull: true,
         type: DataTypes.INTEGER,
@@ -108,6 +98,16 @@ const RequestSchema = {
         type: DataTypes.BOOLEAN,
         field: 'is_paid',
         defaultValue: false,
+    },
+    repairDate: {
+        allowNull: true,
+        type: DataTypes.DATE,
+        field: 'repair_date'
+    },
+    deviceDeliveryDate: {
+        allowNull: true,
+        type: DataTypes.DATE,
+        field: 'device_delivery_date'
     },
     deliverAtHome: {
         allowNull: true,

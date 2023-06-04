@@ -75,12 +75,12 @@ router.get('/:phone_number',//Delete router, warning
     }
 )
 
-router.get('/findTechnician/:user_id/:is_remote',
+router.get('/findTechnician/:user_id/:inside_the_range/:cities_id',
     passport.authenticate('jwt', { session: false }),
     async (req, res, next) => {
         try {
-            const { user_id, is_remote } = req.params
-            const technical = await user.findTechnician(user_id, is_remote)
+            const { user_id, inside_the_range, cities_id } = req.params
+            const technical = await user.findTechnician(user_id, inside_the_range, cities_id)
             res.json(technical)
         } catch (err) {
             next(err)
