@@ -47,22 +47,22 @@ class UserService {
 
   async findTechnician(userId, insideTheRange, cityId) {
     try {
-      if (insideTheRange === 'false') {
+      // if (insideTheRange === 'false') {
         return 2
-      } else {
-        const [ technicalId ] = await models.User.sequelize.query(`
-          SELECT users.id, COUNT(*) requests_number
-            FROM users_requests
-            INNER JOIN users ON users.id = users_requests.users_id
-            INNER JOIN addresses ON addresses.users_id = users.id
-            WHERE is_technical = true 
-            AND cities_id = ${cityId} 
-            AND users.id != ${userId} 
-            GROUP BY users.id
-            ORDER BY requests_number ASC
-        `)
-        return technicalId[0]?.id
-      }
+      // } else {
+      //   const [ technicalId ] = await models.User.sequelize.query(`
+      //     SELECT users.id, COUNT(*) requests_number
+      //       FROM users_requests
+      //       INNER JOIN users ON users.id = users_requests.users_id
+      //       INNER JOIN addresses ON addresses.users_id = users.id
+      //       WHERE is_technical = true 
+      //       AND cities_id = ${cityId} 
+      //       AND users.id != ${userId} 
+      //       GROUP BY users.id
+      //       ORDER BY requests_number ASC
+      //   `)
+      //   return technicalId[0]?.id
+      // }
     } catch (err) {
       throw boom.internal(err)
     }
