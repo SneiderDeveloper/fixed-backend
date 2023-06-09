@@ -45,6 +45,16 @@ class UserService {
     return user
   }
 
+  async findOneForEmail(email) {
+    const user = await models.User.findOne({
+      where: { email }
+    })
+    if (!user) {
+      throw boom.notFound('User not found')
+    }
+    return user
+  }
+
   async findTechnician(userId, insideTheRange, cityId) {
     try {
       // if (insideTheRange === 'false') {
