@@ -4,15 +4,25 @@ const config = require('./config/config')
 const fs = require('fs')
 const admin = require('firebase-admin');
 const serviceAccount = require('./services/modules/fixed-72bee-firebase-adminsdk-gqmb6-094ff5da79.json')
-const { keyPrivate } = require('./services/modules/private-key')
+// const { keyPrivate } = require('./services/modules/private-key')
+const { Server } = require('socket.io')
+const { createServer } = require('http')
 const cors = require('cors')
 const { 
     errorHandleBoom, 
     errorHandle,
     ormErrorHandler
 } = require('./middleware/error.handler');
+const { realTimeHandler } = require('./middleware/realTime.handler')
 
 const app = express()
+const httpServer = createServer(app)
+const io = new Server(httpServer, {
+    cors: {
+        origin: ['http://localhost:3000', 'https://fixed.com.co']
+    }
+})
+
 const PORT = process.env.PORT || 3001
 
 const whitelist = [
@@ -30,11 +40,11 @@ const options = {
 
 // console.log(JSON.stringify(keyPrivate))
 
-const write = (route, content) => {
-    fs.writeFile(route, content, err => {
-        if (err) console.error(err)
-    })
-}
+// const write = (route, content) => {
+//     fs.writeFile(route, content, err => {
+//         if (err) console.error(err)
+//     })
+// }
 
 // write('./services/modules/fixed-72bee-firebase-adminsdk-gqmb6-094ff5da7.json', JSON.stringify(keyPrivate))
 
@@ -50,11 +60,16 @@ app.use(express.json())
 app.get('/', (req, res) => {
     res.send('Fixed API')
 })
-
 routerApi(app)
+realTimeHandler(io)
 app.use(ormErrorHandler)
 app.use(errorHandleBoom)
 app.use(errorHandle)
 
 
-app.listen(PORT)
+// app.listen(PORT)
+httpServer.listen(PORT)
+
+const u ='ksks'
+
+module.exports = { u }

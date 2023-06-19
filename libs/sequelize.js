@@ -1,4 +1,5 @@
 const { Sequelize } = require('sequelize')
+const createSubscriber = require('pg-listen')
 
 const config = require('../config/config')
 const setupModels = require('./../db/models')
@@ -9,11 +10,20 @@ const URI = `postgres://${USER}:${PASSWORD}@${config.host}:${config.port}/${conf
 
 const sequelize = new Sequelize(URI, {
     dialect: 'postgres',
-    logging: true
+    logging: false
 })
+
+const subscriber = createSubscriber({ connectionString: URI })
+
+async function connect () {
+  await subscriber.connect()
+  await subscriber.listenTo("requests")
+}
+
+connect()
 
 setupModels(sequelize)
 
 // sequelize.sync()
 
-module.exports = sequelize
+module.exports = { sequelize, subscriber, connect }

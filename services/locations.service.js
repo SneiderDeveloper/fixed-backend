@@ -1,5 +1,5 @@
 const boom = require('@hapi/boom')
-const { models } = require('../libs/sequelize')
+const { sequelize: { models } } = require('../libs/sequelize')
 
 class LocationService {
     constructor() {

@@ -4,8 +4,7 @@ const bcrypt = require('bcrypt')
 const { uploadFiles } = require('./modules/uploadFile')
 const boom = require('@hapi/boom')
 const { v4: uuidv4 } = require('uuid')
-const pool = require('../libs/postgres.pool')
-const { models } = require('../libs/sequelize')
+const { sequelize: { models } }= require('../libs/sequelize')
 
 class UserService {
   constructor() {

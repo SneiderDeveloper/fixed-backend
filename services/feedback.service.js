@@ -1,4 +1,3 @@
-const { models } = require('../libs/sequelize')
 const { getFirestore } = require('firebase-admin/firestore')
 const boom = require('@hapi/boom')
 

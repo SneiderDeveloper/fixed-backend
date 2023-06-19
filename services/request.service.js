@@ -1,10 +1,10 @@
 const boom = require('@hapi/boom')
-const pool = require('../libs/postgres.pool')
-const { models } = require('../libs/sequelize')
+const { sequelize: { models } } = require('../libs/sequelize')
 
 class RequestService {
+
     constructor() {
-        this.pool = pool
+        
     }
 
     async findOne(id) {
